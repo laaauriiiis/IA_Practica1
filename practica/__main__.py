@@ -1,12 +1,14 @@
+import sys
+#sys.path.append("C:/Users/laura/OneDrive/Documentos/GitHub/IA_Practica1")
+
 from practica import agent, joc
 
-
 def main():
-    mida = (12, 12)
+    mida = (6, 6)
 
     agents = [
         agent.Viatger("Agent 1", mida_taulell=mida),
-        agent.Viatger("Agent 2", mida_taulell=mida),
+         #agent.Viatger("Agent 2", mida_taulell=mida),
     ]
 
     lab = joc.Laberint(agents, mida_taulell=mida)

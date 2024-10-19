@@ -1,7 +1,7 @@
 import copy
 import itertools
 
-from practica.joc import joc
+from practica.joc import Accions
 
 class Estat:
     # Costos de cada acción
@@ -53,7 +53,7 @@ class Estat:
         if self._valid(nova_pos):
             nou_estat = copy.deepcopy(self)
             nou_estat.pos_agent = nova_pos
-            nou_estat.cami.append(('MOURE', direccio))
+            nou_estat.cami.append((Accions.MOURE, direccio))
             return nou_estat
         return None
 
@@ -64,7 +64,7 @@ class Estat:
         if self._valid(nova_pos):
             nou_estat = copy.deepcopy(self)
             nou_estat.pos_agent = nova_pos
-            nou_estat.cami.append(('BOTAR', direccio))
+            nou_estat.cami.append((Accions.BOTAR, direccio))
             return nou_estat
         return None
 
@@ -75,7 +75,7 @@ class Estat:
         if self._valid(nova_pos) and nova_pos not in self.parets:
             nou_estat = copy.deepcopy(self)
             nou_estat.parets.add(nova_pos)
-            nou_estat.cami.append(('POSAR_PARET', direccio))
+            nou_estat.cami.append((Accions.POSAR_PARET, direccio))
             return nou_estat
         return None
 
@@ -93,10 +93,10 @@ class Estat:
             if nou_estat_botar:
                 estats_generats.append(nou_estat_botar)
                 
-            nou_estat_paret = self.posar_paret(direccio)
-            if nou_estat_paret:
-                estats_generats.append(nou_estat_paret)
-
+            #nou_estat_paret = self.posar_paret(direccio)
+            #if nou_estat_paret:
+                #estats_generats.append(nou_estat_paret)
+                
         return estats_generats
 
     def __str__(self):

@@ -5,7 +5,7 @@ from practica.joc import Accions
 
 class Estat:
     # Costos de cada acción
-    COST_MOVIMENT = 1
+    COST_MOURE = 1
     COST_BOTAR = 2
     COST_POSAR_PARET = 3
     midaN = 6
@@ -19,13 +19,14 @@ class Estat:
         'O': (-1, 0)
     }
 
-    def __init__(self, pos_agent, parets, desti, cami=None):
+    def __init__(self, pos_agent, parets, desti, pes, cami=None):
         if cami is None:
             cami = []
         self.pos_agent = pos_agent  # Posición actual del agente
         self.parets = parets  # Lista de coordenadas con paredes
         self.desti = desti  # Coordenadas de la meta
-        self.cami = cami  # Lista de acciones tomadas hasta ahora
+        self.accions_previes = cami  # Lista de acciones tomadas hasta ahora
+        self.pes = pes
 
     def __hash__(self):
         return hash((self.pos_agent, tuple(self.parets)))
@@ -53,7 +54,8 @@ class Estat:
         if self._valid(nova_pos):
             nou_estat = copy.deepcopy(self)
             nou_estat.pos_agent = nova_pos
-            nou_estat.cami.append((Accions.MOURE, direccio))
+            nou_estat.accions_previes.append((Accions.MOURE, direccio))
+            nou_estat.pes = self.COST_MOURE
             return nou_estat
         return None
 
@@ -64,7 +66,8 @@ class Estat:
         if self._valid(nova_pos):
             nou_estat = copy.deepcopy(self)
             nou_estat.pos_agent = nova_pos
-            nou_estat.cami.append((Accions.BOTAR, direccio))
+            nou_estat.accions_previes.append((Accions.BOTAR, direccio))
+            nou_estat.pes = self.COST_BOTAR
             return nou_estat
         return None
 
@@ -75,7 +78,8 @@ class Estat:
         if self._valid(nova_pos) and nova_pos not in self.parets:
             nou_estat = copy.deepcopy(self)
             nou_estat.parets.add(nova_pos)
-            nou_estat.cami.append((Accions.POSAR_PARET, direccio))
+            nou_estat.accions_previes.append((Accions.POSAR_PARET, direccio))
+            nou_estat.pes = self.COST_POSAR_PARET
             return nou_estat
         return None
 
@@ -98,8 +102,11 @@ class Estat:
                 #estats_generats.append(nou_estat_paret)
                 
         return estats_generats
+       
+    def calc_heuristica(self):
+        return abs(self.pos_agent[0] - self.desti[0]) + abs(self.pos_agent[1] - self.desti[1])
 
     def __str__(self):
         return (f"Posició agent: {self.pos_agent} | Paredes: {self.parets} | "
-                f"Camí: {self.cami}")
+                f"Camí: {self.accions_previes}")
 

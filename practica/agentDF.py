@@ -35,7 +35,7 @@ class Viatger(joc.Viatger):
                     self.__per_visitar.append(f)
 
         if estat_actual.es_meta():
-            self.__cami_exit = estat_actual.cami
+            self.__cami_exit = estat_actual.accions_previes
             exit = True
         
         print(f"Camí exit: {self.__visitats}")
@@ -50,7 +50,8 @@ class Viatger(joc.Viatger):
             estat_inicial = Estat(
                 self.posicio,
                 percepcio["PARETS"], 
-                percepcio["DESTI"]
+                percepcio["DESTI"],
+                0
             )
             print(f"Estados{estat_inicial.__str__()}")
             print(f"DESTINO: {percepcio["DESTI"]}")

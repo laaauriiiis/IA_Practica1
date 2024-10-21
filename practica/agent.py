@@ -28,16 +28,17 @@ class Viatger(joc.Viatger):
             if estat_actual.es_meta():
                 break
 
-            for f in estat_actual.genera_fill():
-                if f not in self.__visitats:
-                    self.__per_visitar.append(f)
-
             self.__visitats.add(estat_actual)
+
+            for f in estat_actual.genera_fill():
+                if f not in self.__visitats and f not in self.__per_visitar:  # Evitar duplicados en per_visitar
+                    self.__per_visitar.append(f)
 
         if estat_actual.es_meta():
             self.__cami_exit = estat_actual.cami
             exit = True
         
+        print(f"Camí exit: {self.__visitats}")
         return exit
 
     

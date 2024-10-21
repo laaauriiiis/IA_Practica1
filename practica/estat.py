@@ -19,14 +19,15 @@ class Estat:
         'O': (-1, 0)
     }
 
-    def __init__(self, pos_agent, parets, desti, pes, cami=None):
+    def __init__(self, pos_agent, parets, desti, pes=0, cami=None, cost_accumulat=0):
         if cami is None:
             cami = []
-        self.pos_agent = pos_agent  # Posición actual del agente
-        self.parets = parets  # Lista de coordenadas con paredes
-        self.desti = desti  # Coordenadas de la meta
-        self.accions_previes = cami  # Lista de acciones tomadas hasta ahora
-        self.pes = pes
+            self.pos_agent = pos_agent  # Posición actual del agente
+            self.parets = parets  # Lista de coordenadas con paredes
+            self.desti = desti  # Coordenadas de la meta
+            self.accions_previes = cami  # Lista de acciones tomadas hasta ahora
+            self.cost_accumulat = cost_accumulat  # Costo acumulado hasta este estado
+
 
     def __hash__(self):
         return hash((self.pos_agent, tuple(self.parets)))
@@ -55,7 +56,7 @@ class Estat:
             nou_estat = copy.deepcopy(self)
             nou_estat.pos_agent = nova_pos
             nou_estat.accions_previes.append((Accions.MOURE, direccio))
-            nou_estat.pes = self.COST_MOURE
+            nou_estat.cost_accumulat += self.COST_MOURE  # Añadir el coste de mover
             return nou_estat
         return None
 
@@ -67,7 +68,7 @@ class Estat:
             nou_estat = copy.deepcopy(self)
             nou_estat.pos_agent = nova_pos
             nou_estat.accions_previes.append((Accions.BOTAR, direccio))
-            nou_estat.pes = self.COST_BOTAR
+            nou_estat.cost_accumulat += self.COST_BOTAR  # Añadir el coste de botar
             return nou_estat
         return None
 
@@ -79,9 +80,10 @@ class Estat:
             nou_estat = copy.deepcopy(self)
             nou_estat.parets.add(nova_pos)
             nou_estat.accions_previes.append((Accions.POSAR_PARET, direccio))
-            nou_estat.pes = self.COST_POSAR_PARET
+            nou_estat.cost_accumulat += self.COST_POSAR_PARET  # Añadir el coste de poner pared
             return nou_estat
         return None
+
 
     def genera_fill(self):
         """Genera todos los posibles estados hijos (movimientos posibles)."""
@@ -97,14 +99,19 @@ class Estat:
             if nou_estat_botar:
                 estats_generats.append(nou_estat_botar)
                 
-            #nou_estat_paret = self.posar_paret(direccio)
-            #if nou_estat_paret:
-                #estats_generats.append(nou_estat_paret)
+            nou_estat_paret = self.posar_paret(direccio)
+            if nou_estat_paret:
+                estats_generats.append(nou_estat_paret)
                 
         return estats_generats
-       
+    
     def calc_heuristica(self):
         return abs(self.pos_agent[0] - self.desti[0]) + abs(self.pos_agent[1] - self.desti[1])
+    
+    def f(self):
+        """Función de evaluación f(n) = g(n) + h(n)"""
+        return self.cost_accumulat + self.calc_heuristica()
+
 
     def __str__(self):
         return (f"Posició agent: {self.pos_agent} | Paredes: {self.parets} | "

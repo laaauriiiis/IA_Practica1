@@ -18,7 +18,7 @@ class Viatger(joc.Viatger):
         self.__oberts = PriorityQueue()
         self.__tancats = set()
 
-        self.__oberts.put((estat_inicial.calc_heuristica(), estat_inicial))
+        self.__oberts.put((estat_inicial.f(), estat_inicial))
 
         actual = None
         while not self.__oberts.empty():
@@ -32,7 +32,7 @@ class Viatger(joc.Viatger):
             estats_fills = actual.genera_fill()
 
             for estat_f in estats_fills:
-                self.__oberts.put((estat_f.calc_heuristica(), estat_f))
+                self.__oberts.put((estat_f.f(), estat_f))
 
             self.__tancats.add(actual)
 
